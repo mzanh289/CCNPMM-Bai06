@@ -1,0 +1,128 @@
+[
+{
+"_id": { "$oid": "665f20000000000000000001" },
+"name": "Nova Pro Headphones",
+"slug": "nova-pro-headphones",
+"description": "Wireless ANC headphones with adaptive sound tuning.",
+"price": 249.99,
+"discountPrice": 199.99,
+"sku": "NP-HEAD-01",
+"imageUrls": [
+"http://localhost:8080/uploads/products/nova-pro-headphones-1.jpg",
+"http://localhost:8080/uploads/products/nova-pro-headphones-2.jpg",
+"http://localhost:8080/uploads/products/nova-pro-headphones-3.jpg"
+],
+"stockQuantity": 42,
+"soldQuantity": 120,
+"category": { "$oid": "665f10000000000000000001" },
+"isActive": true,
+"tags": ["audio", "wireless"],
+"createdAt": { "$date": "2026-05-13T00:10:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T00:10:00.000Z" }
+},
+{
+"_id": { "$oid": "665f20000000000000000002" },
+"name": "Aurora Smartwatch",
+"slug": "aurora-smartwatch",
+"description": "Fitness-first smartwatch with health tracking suite.",
+"price": 189.0,
+"discountPrice": null,
+"sku": "AUR-SW-02",
+"imageUrls": [
+"http://localhost:8080/uploads/products/aurora-smartwatch-1.jpg",
+"http://localhost:8080/uploads/products/aurora-smartwatch-2.jpg",
+"http://localhost:8080/uploads/products/aurora-smartwatch-3.jpg"
+],
+"stockQuantity": 30,
+"soldQuantity": 98,
+"category": { "$oid": "665f10000000000000000002" },
+"isActive": true,
+"tags": ["fitness", "wearable"],
+"createdAt": { "$date": "2026-05-13T00:20:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T00:20:00.000Z" }
+},
+{
+"_id": { "$oid": "665f20000000000000000003" },
+"name": "Orion Tablet 11",
+"slug": "orion-tablet-11",
+"description": "11-inch tablet with high-bright display and fast charging.",
+"price": 149.0,
+"discountPrice": 129.0,
+"sku": "ORI-TBL-11",
+"imageUrls": [
+"http://localhost:8080/uploads/products/orion-tablet-11-1.jpg",
+"http://localhost:8080/uploads/products/orion-tablet-11-2.jpg",
+"http://localhost:8080/uploads/products/orion-tablet-11-3.jpg"
+],
+"stockQuantity": 16,
+"soldQuantity": 45,
+"category": { "$oid": "665f10000000000000000003" },
+"isActive": true,
+"tags": ["tablet", "display"],
+"createdAt": { "$date": "2026-05-13T00:30:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T00:30:00.000Z" }
+},
+{
+"_id": { "$oid": "665f20000000000000000004" },
+"name": "Lumen Smart Desk Lamp",
+"slug": "lumen-smart-desk-lamp",
+"description": "Smart lamp with adjustable color temperature and schedules.",
+"price": 79.5,
+"discountPrice": 59.5,
+"sku": "LUM-SHL-03",
+"imageUrls": [
+"http://localhost:8080/uploads/products/lumen-smart-desk-lamp-1.jpg",
+"http://localhost:8080/uploads/products/lumen-smart-desk-lamp-2.jpg",
+"http://localhost:8080/uploads/products/lumen-smart-desk-lamp-3.jpg"
+],
+"stockQuantity": 64,
+"soldQuantity": 76,
+"category": { "$oid": "665f10000000000000000004" },
+"isActive": true,
+"tags": ["smart-home", "lighting"],
+"createdAt": { "$date": "2026-05-13T00:40:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T00:40:00.000Z" }
+},
+{
+"_id": { "$oid": "665f20000000000000000005" },
+"name": "Halo Smart Speaker",
+"slug": "halo-smart-speaker",
+"description": "Compact smart speaker with voice assistant and room EQ.",
+"price": 58.0,
+"discountPrice": null,
+"sku": "HAL-SPK-21",
+"imageUrls": [
+"http://localhost:8080/uploads/products/halo-smart-speaker-1.jpg",
+"http://localhost:8080/uploads/products/halo-smart-speaker-2.jpg",
+"http://localhost:8080/uploads/products/halo-smart-speaker-3.jpg"
+],
+"stockQuantity": 80,
+"soldQuantity": 150,
+"category": { "$oid": "665f10000000000000000001" },
+"isActive": true,
+"tags": ["audio", "smart-assistant"],
+"createdAt": { "$date": "2026-05-13T00:50:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T00:50:00.000Z" }
+},
+{
+"_id": { "$oid": "665f20000000000000000006" },
+"name": "Nimbus Wi-Fi Router",
+"slug": "nimbus-wifi-router",
+"description": "Dual-band Wi-Fi 6 router with mesh-ready support.",
+"price": 89.99,
+"discountPrice": 69.99,
+"sku": "NIM-RT-07",
+"imageUrls": [
+"http://localhost:8080/uploads/products/nimbus-wifi-router-1.jpg",
+"http://localhost:8080/uploads/products/nimbus-wifi-router-2.jpg",
+"http://localhost:8080/uploads/products/nimbus-wifi-router-3.jpg"
+],
+"stockQuantity": 24,
+"soldQuantity": 52,
+"category": { "$oid": "665f10000000000000000003" },
+"isActive": true,
+"tags": ["network", "wifi"],
+"createdAt": { "$date": "2026-05-13T01:00:00.000Z" },
+"updatedAt": { "$date": "2026-05-13T01:00:00.000Z" }
+}
+]

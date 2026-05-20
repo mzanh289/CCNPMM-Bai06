@@ -1,0 +1,83 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth.context';
+import { SearchOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
+
+const ShopHeader = ({ searchValue = '', onSearchChange }) => {
+  const { auth, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <div className="section-shell">
+        <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center justify-between gap-4">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white font-bold">Q</div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Quick & Legit</p>
+                <h1 className="font-display text-xl text-slate-900">DANH'S SHOP</h1>
+              </div>
+            </Link>
+            <button className="flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white lg:hidden">
+              Menu
+            </button>
+          </div>
+
+          <nav className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-600">
+            <Link to="/" className="hover:text-slate-900">Home</Link>
+            <a href="#latest" className="hover:text-slate-900">Latest</a>
+            <a href="#best-sellers" className="hover:text-slate-900">Best Sellers</a>
+            <a href="#promotions" className="hover:text-slate-900">Promotions</a>
+            <a href="#categories" className="hover:text-slate-900">Categories</a>
+          </nav>
+
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
+            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+              <SearchOutlined className="text-slate-400" />
+              <input
+                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+                placeholder="Search products"
+                value={searchValue}
+                onChange={(event) => onSearchChange?.(event.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
+                <ShoppingCartOutlined />
+                Cart
+              </button>
+              <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2">
+                <div className="h-8 w-8 rounded-full bg-slate-900/90 text-xs font-semibold text-white flex items-center justify-center">
+                  {auth?.user?.name?.[0]?.toUpperCase() || auth?.user?.email?.[0]?.toUpperCase() || 'U'}
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500">Member</p>
+                  <p className="text-sm font-semibold text-slate-900">
+                    {auth?.user?.name || auth?.user?.email || 'Guest'}
+                  </p>
+                </div>
+                {auth?.isAuthenticated && (
+                  <button
+                    className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-400"
+                    onClick={handleLogout}
+                  >
+                    <LogoutOutlined />
+                    Logout
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default ShopHeader;

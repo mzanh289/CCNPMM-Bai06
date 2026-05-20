@@ -1,0 +1,28 @@
+[
+  {
+    "_id": { "$oid": "665f40000000000000000001" },
+    "title": "Nova Pro Launch Deal",
+    "description": "Save on Nova Pro Headphones.",
+    "type": "PERCENT",
+    "value": 20,
+    "startsAt": { "$date": "2026-05-13T00:00:00.000Z" },
+    "endsAt": { "$date": "2026-05-27T00:00:00.000Z" },
+    "product": { "$oid": "665f20000000000000000001" },
+    "isActive": true,
+    "createdAt": { "$date": "2026-05-13T01:20:00.000Z" },
+    "updatedAt": { "$date": "2026-05-13T01:20:00.000Z" }
+  },
+  {
+    "_id": { "$oid": "665f40000000000000000002" },
+    "title": "Smart Lighting Promo",
+    "description": "Limited-time discount on the smart desk lamp.",
+    "type": "AMOUNT",
+    "value": 20,
+    "startsAt": { "$date": "2026-05-13T00:00:00.000Z" },
+    "endsAt": { "$date": "2026-05-27T00:00:00.000Z" },
+    "product": { "$oid": "665f20000000000000000004" },
+    "isActive": true,
+    "createdAt": { "$date": "2026-05-13T01:21:00.000Z" },
+    "updatedAt": { "$date": "2026-05-13T01:21:00.000Z" }
+  }
+]
