@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { notification } from 'antd';
 import ShopHeader from '../components/shop/ShopHeader';
@@ -6,14 +6,22 @@ import CheckoutForm from '../components/shop/CheckoutForm';
 import CartItem from '../components/shop/CartItem';
 import { CartContext } from '../components/context/cart.context.jsx';
 import { checkoutApi } from '../util/order.api.js';
+import { AuthContext } from '../components/context/auth.context.jsx';
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0);
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
   const { cart, updateItem, removeItem, refreshCart } = useContext(CartContext);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!auth?.isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
+  }, [auth?.isAuthenticated, navigate]);
 
   const handleSubmit = async (shippingAddress) => {
     if (!cart?.items?.length) {

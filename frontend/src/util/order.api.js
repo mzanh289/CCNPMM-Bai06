@@ -9,3 +9,12 @@ export const fetchMyOrders = () => axios.get(`${API_PREFIX}/my-orders`);
 export const fetchOrderDetail = (orderId) => axios.get(`${API_PREFIX}/${orderId}`);
 
 export const cancelOrderApi = (orderId) => axios.patch(`${API_PREFIX}/${orderId}/cancel`);
+
+export const confirmDeliveredApi = (orderId) =>
+	axios.patch(`${API_PREFIX}/${orderId}/confirm-delivered`);
+
+export const fetchAdminOrders = (params = {}) =>
+	axios.get('/api/admin/orders', { params });
+
+export const updateAdminOrderStatus = (orderId, payload) =>
+	axios.patch(`/api/admin/orders/${orderId}/status`, payload);

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
+import { notification } from 'antd';
 import { AuthContext } from '../context/auth.context';
 import { SearchOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { CartContext } from '../context/cart.context.jsx';
@@ -23,6 +24,15 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleOpenCart = () => {
+    if (!auth?.isAuthenticated) {
+      notification.info({ message: 'Cart', description: 'Please login to access your cart.' });
+      navigate('/login');
+      return;
+    }
+    openDrawer();
   };
 
   return (
@@ -49,7 +59,9 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
             <a href="#best-sellers" className="hover:text-slate-900">Best Sellers</a>
             <a href="#promotions" className="hover:text-slate-900">Promotions</a>
             <a href="#categories" className="hover:text-slate-900">Categories</a>
-            <Link to="/orders" className="hover:text-slate-900">Orders</Link>
+            {auth?.isAuthenticated && (
+              <Link to="/orders" className="hover:text-slate-900">Orders</Link>
+            )}
           </nav>
 
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
@@ -64,12 +76,14 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
             </div>
             <div className="flex items-center gap-3">
               <button
-                className="relative flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
-                onClick={openDrawer}
+                className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white ${
+                  auth?.isAuthenticated ? 'bg-slate-900' : 'bg-slate-400'
+                }`}
+                onClick={handleOpenCart}
               >
                 <ShoppingCartOutlined />
                 Cart
-                {itemCount > 0 && (
+                {auth?.isAuthenticated && itemCount > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500 text-xs font-semibold text-white">
                     {itemCount}
                   </span>
@@ -85,13 +99,20 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
                     {auth?.user?.name || auth?.user?.email || 'Guest'}
                   </p>
                 </div>
-                {auth?.isAuthenticated && (
+                {auth?.isAuthenticated ? (
                   <button
                     className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-400"
                     onClick={handleLogout}
                   >
                     <LogoutOutlined />
                     Logout
+                  </button>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-400"
+                    onClick={() => navigate('/login')}
+                  >
+                    Login
                   </button>
                 )}
               </div>
@@ -100,15 +121,17 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
         </div>
       </div>
     </header>
-    <CartDrawer
-      open={isDrawerOpen}
-      onClose={closeDrawer}
-      cart={cart}
-      loading={loading}
-      onUpdateItem={updateItem}
-      onRemoveItem={removeItem}
-      onClearCart={clearCart}
-    />
+    {auth?.isAuthenticated && (
+      <CartDrawer
+        open={isDrawerOpen}
+        onClose={closeDrawer}
+        cart={cart}
+        loading={loading}
+        onUpdateItem={updateItem}
+        onRemoveItem={removeItem}
+        onClearCart={clearCart}
+      />
+    )}
     </>
   );
 };

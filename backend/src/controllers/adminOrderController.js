@@ -13,10 +13,11 @@ const respondSuccess = (res, message, data = {}) =>
 const respondError = (res, status, message, data = {}) =>
   res.status(status).json({ success: false, message, data });
 
-const getAdminOrders = async (_req, res) => {
+const getAdminOrders = async (req, res) => {
   try {
-    const orders = await orderService.getAdminOrders();
-    return respondSuccess(res, 'Orders loaded.', { orders });
+    const { status, page, limit } = req.query || {};
+    const result = await orderService.getAdminOrders({ status, page, limit });
+    return respondSuccess(res, 'Orders loaded.', result);
   } catch (error) {
     logControllerError('getAdminOrders', error);
     return respondError(res, 500, 'Unable to load orders.');

@@ -176,10 +176,47 @@ const cancelOrder = async (userId, orderId) => {
   return order;
 };
 
-const getAdminOrders = async () => {
+const getAdminOrders = async ({ status, page = 1, limit = 10 } = {}) => {
   await autoConfirmPendingOrders();
-  const orders = await Order.find().sort({ orderedAt: -1 }).lean();
-  return orders.map(normalizeOrder);
+  const normalizedPage = Math.max(Number(page) || 1, 1);
+  const normalizedLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
+  const query = {};
+
+  if (status) {
+    query.orderStatus = status;
+  }
+
+  const total = await Order.countDocuments(query);
+  const orders = await Order.find(query)
+    .sort({ orderedAt: -1 })
+    .skip((normalizedPage - 1) * normalizedLimit)
+    .limit(normalizedLimit)
+    .lean();
+
+  return {
+    orders: orders.map(normalizeOrder),
+    pagination: {
+      page: normalizedPage,
+      limit: normalizedLimit,
+      total,
+      totalPages: Math.max(Math.ceil(total / normalizedLimit), 1)
+    }
+  };
+};
+
+const confirmDelivered = async (userId, orderId) => {
+  const order = await Order.findOne({ _id: orderId, user: userId });
+  if (!order) {
+    throw new Error('ORDER_NOT_FOUND');
+  }
+
+  if (order.orderStatus !== 'shipping') {
+    throw new Error('ORDER_NOT_SHIPPING');
+  }
+
+  order.orderStatus = 'delivered';
+  await order.save();
+  return order;
 };
 
 const updateOrderStatus = async (orderId, status) => {
@@ -236,6 +273,7 @@ module.exports = {
   getMyOrders,
   getOrderById,
   cancelOrder,
+  confirmDelivered,
   getAdminOrders,
   updateOrderStatus
 };

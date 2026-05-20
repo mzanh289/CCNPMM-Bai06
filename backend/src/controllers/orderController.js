@@ -81,9 +81,27 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+const confirmDelivered = async (req, res) => {
+  try {
+    const order = await orderService.confirmDelivered(req.user.id, req.params.id);
+    return respondSuccess(res, 'Order marked as delivered.', { order });
+  } catch (error) {
+    if (error.message === 'ORDER_NOT_FOUND') {
+      return respondError(res, 404, 'Order not found.');
+    }
+    if (error.message === 'ORDER_NOT_SHIPPING') {
+      return respondError(res, 409, 'Order must be in shipping status.');
+    }
+
+    logControllerError('confirmDelivered', error);
+    return respondError(res, 500, 'Unable to confirm delivery.');
+  }
+};
+
 module.exports = {
   checkout,
   getMyOrders,
   getOrderDetail,
-  cancelOrder
+  cancelOrder,
+  confirmDelivered
 };

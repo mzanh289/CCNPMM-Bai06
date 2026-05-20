@@ -4,7 +4,7 @@ import { notification } from 'antd';
 import ShopHeader from '../components/shop/ShopHeader';
 import OrderStatusBadge from '../components/shop/OrderStatusBadge';
 import OrderTimeline from '../components/shop/OrderTimeline';
-import { cancelOrderApi, fetchOrderDetail } from '../util/order.api.js';
+import { cancelOrderApi, confirmDeliveredApi, fetchOrderDetail } from '../util/order.api.js';
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0);
@@ -42,6 +42,20 @@ const OrderDetailPage = () => {
       }
     } catch (error) {
       notification.error({ message: 'Order', description: error?.message || 'Unable to cancel.' });
+    }
+  };
+
+  const handleConfirmDelivered = async () => {
+    try {
+      const res = await confirmDeliveredApi(id);
+      if (res?.success) {
+        notification.success({ message: 'Order', description: res?.message || 'Order delivered.' });
+        setOrder(res?.data?.order ?? order);
+      } else {
+        notification.error({ message: 'Order', description: res?.message || 'Unable to confirm delivery.' });
+      }
+    } catch (error) {
+      notification.error({ message: 'Order', description: error?.message || 'Unable to confirm delivery.' });
     }
   };
 
@@ -141,6 +155,14 @@ const OrderDetailPage = () => {
                     disabled={['shipping', 'delivered', 'cancelled', 'cancel_requested'].includes(order.orderStatus)}
                   >
                     Request cancellation
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 w-full rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white disabled:opacity-50"
+                    onClick={handleConfirmDelivered}
+                    disabled={order.orderStatus !== 'shipping'}
+                  >
+                    Confirm delivered
                   </button>
                   <Link
                     to="/orders"

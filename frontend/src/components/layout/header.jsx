@@ -9,14 +9,27 @@ const Header = () => {
     const { auth, logout } = useContext(AuthContext);
 
     const items = [
-        {
+        ...(auth?.user?.role === 'ADMIN' ? [{
+            label: <Link to={"/admin/profile"}>Order Management</Link>,
+            key: 'admin-orders',
+            icon: <HomeOutlined />,
+        }] : [{
             label: <Link to={"/"}>Home Page</Link>,
             key: 'home',
             icon: <HomeOutlined />,
-        },
+        }]),
         ...(auth.isAuthenticated ? [{
             label: <Link to={auth?.user?.role === 'ADMIN' ? "/admin/profile" : "/user/profile"}>Profile</Link>,
             key: 'profile',
+            icon: <UsergroupAddOutlined />,
+        }] : []),
+        ...(auth.isAuthenticated && auth?.user?.role === 'USER' ? [{
+            label: <Link to="/orders">Orders</Link>,
+            key: 'orders',
+            icon: <UsergroupAddOutlined />,
+        }, {
+            label: <Link to="/cart">Cart</Link>,
+            key: 'cart',
             icon: <UsergroupAddOutlined />,
         }] : []),
 
