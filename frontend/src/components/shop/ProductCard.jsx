@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { notification } from 'antd';
+import { CartContext } from '../context/cart.context.jsx';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -31,6 +34,7 @@ const buildImageUrl = (url) => {
 };
 
 const ProductCard = ({ product }) => {
+  const { addItem } = useContext(CartContext);
   const productId = product?.id || product?._id;
   const images = Array.isArray(product?.imageUrls)
     ? product.imageUrls.map(buildImageUrl).filter(Boolean)
@@ -42,6 +46,23 @@ const ProductCard = ({ product }) => {
   const discountPrice = Number.isFinite(product?.discountPrice) ? product.discountPrice : null;
   const hasDiscount = Number.isFinite(discountPrice) && discountPrice > 0 && discountPrice < price;
   const displayImage = galleryImages[0] || FALLBACK_IMAGE;
+
+  const handleAddToCart = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!productId) {
+      notification.error({ message: 'Cart', description: 'Product not available.' });
+      return;
+    }
+
+    const res = await addItem({ productId, quantity: 1 });
+    if (res.ok) {
+      notification.success({ message: 'Cart', description: res.message });
+    } else {
+      notification.error({ message: 'Cart', description: res.message });
+    }
+  };
 
   return (
     <Link
@@ -99,9 +120,18 @@ const ProductCard = ({ product }) => {
         </p>
         <h4 className="text-lg font-semibold text-slate-900 line-clamp-2">{product?.name || 'Unnamed product'}</h4>
         <p className="text-sm text-slate-500 line-clamp-2">{product?.description || 'No description available.'}</p>
-        <div className="mt-auto flex items-center gap-3">
-          <span className="text-lg font-semibold text-slate-900">{formatCurrency(hasDiscount ? discountPrice : price)}</span>
-          {hasDiscount && <span className="text-sm text-slate-400 line-through">{formatCurrency(price)}</span>}
+        <div className="mt-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-semibold text-slate-900">{formatCurrency(hasDiscount ? discountPrice : price)}</span>
+            {hasDiscount && <span className="text-sm text-slate-400 line-through">{formatCurrency(price)}</span>}
+          </div>
+          <button
+            type="button"
+            className="rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 hover:border-slate-400"
+            onClick={handleAddToCart}
+          >
+            Add
+          </button>
         </div>
       </div>
     </Link>

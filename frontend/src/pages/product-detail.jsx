@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { notification } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import 'swiper/css';
@@ -11,6 +12,7 @@ import SectionHeader from '../components/shop/SectionHeader';
 import ProductGrid from '../components/shop/ProductGrid';
 import ShopFooter from '../components/shop/ShopFooter';
 import { fetchProductDetail } from '../util/catalog.api';
+import { CartContext } from '../components/context/cart.context.jsx';
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('en-US', {
@@ -40,6 +42,7 @@ const buildImageUrl = (url) => {
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const { addItem } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +75,21 @@ const ProductDetailPage = () => {
   const handleQuantity = (next) => {
     const normalized = Math.min(Math.max(next, 1), maxQty || 1);
     setQuantity(normalized);
+  };
+
+  const handleAddToCart = async () => {
+    const resolvedProductId = product?.id ?? product?._id ?? id;
+    if (!resolvedProductId) {
+      notification.error({ message: 'Cart', description: 'Product not available.' });
+      return;
+    }
+
+    const res = await addItem({ productId: resolvedProductId, quantity });
+    if (res.ok) {
+      notification.success({ message: 'Cart', description: res.message });
+    } else {
+      notification.error({ message: 'Cart', description: res.message });
+    }
   };
 
   if (loading) {
@@ -240,6 +258,7 @@ const ProductDetailPage = () => {
                   </div>
                   <button
                     className="flex-1 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white"
+                    onClick={handleAddToCart}
                   >
                     Add to cart
                   </button>

@@ -6,6 +6,9 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const catalogRoutes = require('./routes/catalogRoutes');
 const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const adminOrderRoutes = require('./routes/adminOrderRoutes');
 
 const app = express();
 
@@ -24,5 +27,8 @@ app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 
 module.exports = app;

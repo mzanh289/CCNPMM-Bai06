@@ -16,6 +16,11 @@ import LoginPage from './pages/login.jsx';
 import ProductDetailPage from './pages/product-detail.jsx';
 import { AuthWrapper } from './components/context/auth.context.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
+import { CartProvider } from './components/context/cart.context.jsx';
+import CartPage from './pages/cart.jsx';
+import CheckoutPage from './pages/checkout.jsx';
+import OrdersPage from './pages/orders.jsx';
+import OrderDetailPage from './pages/order-detail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +51,22 @@ const router = createBrowserRouter([
         path: "products/:id",
         element: <ProtectedRoute allowedRoles={["USER", "ADMIN"]}><ProductDetailPage /></ProtectedRoute>
       },
+      {
+        path: "cart",
+        element: <ProtectedRoute allowedRoles={["USER", "ADMIN"]}><CartPage /></ProtectedRoute>
+      },
+      {
+        path: "checkout",
+        element: <ProtectedRoute allowedRoles={["USER", "ADMIN"]}><CheckoutPage /></ProtectedRoute>
+      },
+      {
+        path: "orders",
+        element: <ProtectedRoute allowedRoles={["USER", "ADMIN"]}><OrdersPage /></ProtectedRoute>
+      },
+      {
+        path: "orders/:id",
+        element: <ProtectedRoute allowedRoles={["USER", "ADMIN"]}><OrderDetailPage /></ProtectedRoute>
+      }
     ]
   },
   {
@@ -61,7 +82,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthWrapper>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthWrapper>
   </React.StrictMode>,
 )

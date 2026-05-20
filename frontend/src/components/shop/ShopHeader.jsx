@@ -2,9 +2,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth.context';
 import { SearchOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
+import { CartContext } from '../context/cart.context.jsx';
+import CartDrawer from './CartDrawer';
 
 const ShopHeader = ({ searchValue = '', onSearchChange }) => {
   const { auth, logout } = useContext(AuthContext);
+  const {
+    cart,
+    itemCount,
+    isDrawerOpen,
+    openDrawer,
+    closeDrawer,
+    updateItem,
+    removeItem,
+    clearCart,
+    loading
+  } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -13,6 +26,7 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
   };
 
   return (
+    <>
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
       <div className="section-shell">
         <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
@@ -35,6 +49,7 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
             <a href="#best-sellers" className="hover:text-slate-900">Best Sellers</a>
             <a href="#promotions" className="hover:text-slate-900">Promotions</a>
             <a href="#categories" className="hover:text-slate-900">Categories</a>
+            <Link to="/orders" className="hover:text-slate-900">Orders</Link>
           </nav>
 
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
@@ -48,9 +63,17 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
               />
             </div>
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
+              <button
+                className="relative flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+                onClick={openDrawer}
+              >
                 <ShoppingCartOutlined />
                 Cart
+                {itemCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500 text-xs font-semibold text-white">
+                    {itemCount}
+                  </span>
+                )}
               </button>
               <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2">
                 <div className="h-8 w-8 rounded-full bg-slate-900/90 text-xs font-semibold text-white flex items-center justify-center">
@@ -77,6 +100,16 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
         </div>
       </div>
     </header>
+    <CartDrawer
+      open={isDrawerOpen}
+      onClose={closeDrawer}
+      cart={cart}
+      loading={loading}
+      onUpdateItem={updateItem}
+      onRemoveItem={removeItem}
+      onClearCart={clearCart}
+    />
+    </>
   );
 };
 

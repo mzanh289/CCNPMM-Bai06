@@ -72,6 +72,13 @@ function App() {
     initialize();
   }, [])
 
+  const hideLayoutHeader =
+    location.pathname === '/' ||
+    location.pathname.startsWith('/products') ||
+    location.pathname.startsWith('/cart') ||
+    location.pathname.startsWith('/checkout') ||
+    location.pathname.startsWith('/orders');
+
   return (
     <div>
       {appLoading === true ?
@@ -85,7 +92,7 @@ function App() {
         </div>
         :
         <>
-          {location.pathname === "/" || location.pathname.startsWith("/products") ? null : <Header />}
+          {hideLayoutHeader ? null : <Header />}
           <Outlet />
         </>
       }
