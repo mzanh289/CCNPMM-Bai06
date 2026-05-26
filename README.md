@@ -1,248 +1,97 @@
-# Bài tập 05 - 18/05/2026
+# Bài tập 06 - 20/05/2026
 
-Yêu cầu: bài tập cá nhân bao gồm API + UI, commit lên github cá nhân.
 
----
+## 1. Chức năng Giỏ hàng (Cart)
 
-# Giới thiệu dự án
-
-Dự án xây dựng website Ecommerce sử dụng:
-
-- Frontend: React + Vite + TailwindCSS + Ant Design
-- Backend: Node.js + Express + MongoDB
-- UI responsive hiện đại
-- Lazy loading sản phẩm
-- Tìm kiếm và lọc nhiều điều kiện
-- Swiper hiển thị ảnh sản phẩm
-- API RESTful
+- Add To Cart
+- Update Quantity
+- Remove Cart Item
+- Clear Cart
+- Mini Cart Drawer
+- Global Cart State bằng Context API
+- Lưu dữ liệu giỏ hàng bằng MongoDB
 
 ---
 
-# Chức năng chính
+# 2. Chức năng Thanh toán (Checkout)
 
-## Trang chủ
-
-Hiển thị các khu vực:
-
-- Khuyến mãi (Promotions)
-- Sản phẩm mới nhất (Latest Products)
-- Sản phẩm bán chạy nhất (Best Sellers)
-- Sản phẩm xem nhiều nhất (Most Viewed)
-- Danh mục sản phẩm
-- Thông tin thành viên đăng nhập
-- Logout
+- Checkout từ Cart
+- Thanh toán COD
+- Nhập địa chỉ giao hàng
+- Snapshot thông tin sản phẩm và giá tại thời điểm đặt hàng
+- Tự động clear cart sau khi đặt hàng thành công
 
 ---
 
-## Trang chi tiết sản phẩm
+# 3. Guest & Authentication UI
 
-Bao gồm:
-
-- Thông tin sản phẩm
-- Swiper nhiều ảnh sản phẩm
-- Báo số lượng tồn kho
-- Số lượng đã bán
-- Tăng giảm số lượng
-- Sản phẩm tương tự
-- Hiển thị danh mục tương ứng
+- Guest hiển thị nút Login
+- Chặn checkout khi chưa đăng nhập
+- Redirect sang Login trước khi checkout
 
 ---
 
-## Tìm kiếm và lọc sản phẩm
+# 4. Chức năng Theo dõi đơn hàng
 
-Hỗ trợ:
+Người dùng có thể:
 
-- Tìm kiếm theo tên
-- Lọc theo danh mục
-- Khoảng giá
-- Có giảm giá
-- Còn hàng
-- Bán chạy
-- Sắp xếp giá tăng/giảm
-- Sản phẩm mới nhất
+- Xem lịch sử mua hàng
+- Xem chi tiết đơn hàng
+- Theo dõi trạng thái đơn hàng
+- Hủy đơn hàng trong 30 phút đầu
+- Gửi yêu cầu hủy đơn nếu shop đang chuẩn bị hàng
+- Xác nhận đã nhận hàng khi đơn đang giao
 
 ---
 
-# Yêu cầu nâng cao
+# 5. Trạng thái đơn hàng
 
-## 1. Lazy Loading sản phẩm theo danh mục
-
-Chức năng hiển thị tất cả sản phẩm theo từng danh mục sử dụng:
-
-- Lazy Loading để tải tiếp sản phẩm khi kéo xuống cuối trang
-- Có hỗ trợ API phân trang
-- UI tự động load thêm sản phẩm khi scroll
-
-Áp dụng cho:
-
-- Product Catalog
-- Search Result
-- Category Products
+1. Pending (Đơn hàng mới)
+2. Confirmed (Đã xác nhận)
+3. Preparing (Shop chuẩn bị hàng)
+4. Shipping (Đang giao hàng)
+5. Delivered (Đã giao thành công)
+6. Cancelled (Đã hủy)
+7. Cancel Requested (Yêu cầu hủy đơn)
 
 ---
 
-## 2. Hiển thị Top 10 sản phẩm bán chạy và xem nhiều
+# 6. Logic cập nhật trạng thái
 
-Bao gồm:
+## User
 
-- Top 10 Best Sellers
-- Top 10 Most Viewed Products
-
-Tính năng:
-
-- API riêng cho từng loại
-- Hiển thị dạng horizontal slider
-- Phân trang/cuộn ngang bằng nút Prev/Next
-- Responsive UI
+- Chỉ được hủy đơn trong 30 phút đầu
+- Nếu đơn đang `preparing`
+  - Chuyển sang `cancel_requested`
+- Nếu đơn đang `shipping`
+  - User có thể xác nhận `delivered`
 
 ---
 
-# Công nghệ sử dụng
+## Admin
 
-## Frontend
+Admin có thể:
 
-- React
-- Vite
-- TailwindCSS
-- Ant Design
-- Swiper
-- Axios
-- React Router DOM
+- Xem toàn bộ đơn hàng
+- Lọc đơn theo trạng thái
+- Cập nhật trạng thái đơn hàng đúng flow
 
-## Backend
+Flow hợp lệ:
 
-- Node.js
-- ExpressJS
-- MongoDB + Mongoose
-- JWT Authentication
-- Multer Upload
-- Nodemailer
-
----
-
-# Cấu trúc thư mục
-
-```bash
-project-root/
-│
-├── backend/
-│   ├── src/
-│   ├── package.json
-│
-├── frontend/
-│   ├── src/
-│   ├── package.json
-│
-├── package.json
-└── README.md
+```txt
+pending -> confirmed
+confirmed -> preparing
+preparing -> shipping
+shipping -> delivered
+pending/confirmed -> cancelled
 ```
 
 ---
 
-# Hướng dẫn cài đặt và chạy dự án
+# 7. Admin Dashboard
 
-## 1. Clone project
-
-```bash
-git clone <your-repository-url>
-cd Group10-ecommerce-api-ui
-```
-
----
-
-## 2. Cài dependencies
-
-### Cài package cho root
-
-```bash
-npm install
-```
-
-### Cài package cho backend
-
-```bash
-cd backend
-npm install
-```
-
-### Cài package cho frontend
-
-```bash
-cd ../frontend
-npm install
-```
-
----
-
-# Cấu hình môi trường
-
-## Tạo file `.env`
-
-Tạo file:
-
-```bash
-backend/.env
-```
-
----
-
-# Import dữ liệu sản phẩm
-
-Từ thư mục root:
-
-```bash
-npm run seed
-```
-
-Hoặc:
-
-```bash
-cd backend
-npm run seed:products
-```
-
-Script sẽ:
-
-- Import sản phẩm
-- Import danh mục
-- Random soldQuantity
-- Random viewCount
-- Random discountPrice
-- Không bị duplicate dữ liệu
-
----
-
-# Chạy Backend
-
-Mở terminal:
-
-```bash
-cd backend
-npm run dev
-```
-
-Backend chạy tại:
-
-```bash
-http://localhost:8080
-```
-
----
-
-# Chạy Frontend
-
-Mở terminal khác:
-
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend chạy tại:
-
-```bash
-http://localhost:5173
-```
-
----
-
+- View All Orders
+- Filter Orders By Status
+- Update Order Status
+- Pagination
+- Order Timeline Tracking
