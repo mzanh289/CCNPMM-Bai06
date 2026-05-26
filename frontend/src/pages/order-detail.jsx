@@ -156,14 +156,15 @@ const OrderDetailPage = () => {
                   >
                     Request cancellation
                   </button>
-                  <button
-                    type="button"
-                    className="mt-3 w-full rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white disabled:opacity-50"
-                    onClick={handleConfirmDelivered}
-                    disabled={order.orderStatus !== 'shipping'}
-                  >
-                    Confirm delivered
-                  </button>
+                  {order.orderStatus === 'delivered' && (
+                    <button
+                      type="button"
+                      className="mt-3 w-full rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white"
+                      onClick={handleConfirmDelivered}
+                    >
+                      Confirm received
+                    </button>
+                  )}
                   <Link
                     to="/orders"
                     className="mt-3 flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white"

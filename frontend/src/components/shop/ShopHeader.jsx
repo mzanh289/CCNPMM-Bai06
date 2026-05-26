@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { notification } from 'antd';
+import { Modal, notification } from 'antd';
 import { AuthContext } from '../context/auth.context';
 import { SearchOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { CartContext } from '../context/cart.context.jsx';
@@ -22,8 +22,16 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    Modal.confirm({
+      title: 'Confirm logout',
+      content: 'Are you sure you want to log out? You will be redirected to login.',
+      okText: 'Logout',
+      cancelText: 'Cancel',
+      onOk: () => {
+        logout();
+        navigate('/login');
+      }
+    });
   };
 
   const handleOpenCart = () => {
@@ -62,18 +70,12 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
             {auth?.isAuthenticated && (
               <Link to="/orders" className="hover:text-slate-900">Orders</Link>
             )}
+            {auth?.isAuthenticated && auth?.user?.role === 'ADMIN' && (
+              <Link to="/admin" className="hover:text-slate-900">Admin</Link>
+            )}
           </nav>
 
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
-            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
-              <SearchOutlined className="text-slate-400" />
-              <input
-                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-                placeholder="Search products"
-                value={searchValue}
-                onChange={(event) => onSearchChange?.(event.target.value)}
-              />
-            </div>
             <div className="flex items-center gap-3">
               <button
                 className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white ${

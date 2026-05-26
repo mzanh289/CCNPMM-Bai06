@@ -33,8 +33,7 @@ const LoginPage = () => {
                         name: res?.user?.name ?? ""
                     }
                 })
-                const nextUrl = res?.user?.role === 'ADMIN' ? '/admin/profile' : '/';
-                navigate(res?.url || nextUrl, { replace: true });
+                navigate('/', { replace: true });
 
             } else {
                 notification.error({
@@ -54,9 +53,9 @@ const LoginPage = () => {
 
     return (
         <AuthPageShell
-            eyebrow="Secure auth"
+            eyebrow="Danh's Shop"
             title="Đăng nhập"
-            description="Truy cập an toàn bằng JWT, có hỗ trợ role-based redirect cho user và admin."
+            description="Đăng nhập để tiếp tục mua sắm và trải nghiệm những ưu đãi hấp dẫn từ chúng tôi!"
             footer={
                 <div className="auth-page__footer">
                     <Link to="/"><ArrowLeftOutlined /> Quay lại trang chủ</Link>

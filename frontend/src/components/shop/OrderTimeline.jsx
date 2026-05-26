@@ -31,7 +31,8 @@ const OrderTimeline = ({ status }) => {
       <div className="space-y-4">
         {STATUS_ORDER.map((step, index) => {
           const isActive = index === activeIndex;
-          const isComplete = index < activeIndex;
+          const isComplete =
+            index < activeIndex || (status === 'delivered' && index === activeIndex);
           return (
             <div key={step} className="flex items-center gap-3">
               <span

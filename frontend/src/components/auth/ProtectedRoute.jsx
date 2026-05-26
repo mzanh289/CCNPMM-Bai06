@@ -14,8 +14,7 @@ const ProtectedRoute = ({ allowedRoles = [], children }) => {
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(auth?.user?.role)) {
-    const fallbackRoute = auth?.user?.role === 'ADMIN' ? '/admin/profile' : '/user/profile';
-    return <Navigate to={fallbackRoute} replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

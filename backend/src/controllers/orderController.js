@@ -89,8 +89,8 @@ const confirmDelivered = async (req, res) => {
     if (error.message === 'ORDER_NOT_FOUND') {
       return respondError(res, 404, 'Order not found.');
     }
-    if (error.message === 'ORDER_NOT_SHIPPING') {
-      return respondError(res, 409, 'Order must be in shipping status.');
+    if (error.message === 'ORDER_NOT_DELIVERED') {
+      return respondError(res, 409, 'Order must be in delivered status.');
     }
 
     logControllerError('confirmDelivered', error);

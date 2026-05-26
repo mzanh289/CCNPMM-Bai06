@@ -210,8 +210,8 @@ const confirmDelivered = async (userId, orderId) => {
     throw new Error('ORDER_NOT_FOUND');
   }
 
-  if (order.orderStatus !== 'shipping') {
-    throw new Error('ORDER_NOT_SHIPPING');
+  if (order.orderStatus !== 'delivered') {
+    throw new Error('ORDER_NOT_DELIVERED');
   }
 
   order.orderStatus = 'delivered';

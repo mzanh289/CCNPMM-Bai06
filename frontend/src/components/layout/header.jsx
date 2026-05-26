@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { UsergroupAddOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Menu, Modal } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/auth.context';
 
@@ -8,9 +8,23 @@ const Header = () => {
     const navigate = useNavigate();
     const { auth, logout } = useContext(AuthContext);
 
+    const handleLogout = () => {
+        Modal.confirm({
+            title: 'Confirm logout',
+            content: 'Are you sure you want to log out? You will be redirected to login.',
+            okText: 'Logout',
+            cancelText: 'Cancel',
+            onOk: () => {
+                logout();
+                setCurrent('login');
+                navigate('/login');
+            }
+        });
+    };
+
     const items = [
         ...(auth?.user?.role === 'ADMIN' ? [{
-            label: <Link to={"/admin/profile"}>Order Management</Link>,
+            label: <Link to={"/admin"}>Admin Dashboard</Link>,
             key: 'admin-orders',
             icon: <HomeOutlined />,
         }] : [{
@@ -18,8 +32,13 @@ const Header = () => {
             key: 'home',
             icon: <HomeOutlined />,
         }]),
+        ...(!auth.isAuthenticated ? [{
+            label: <Link to="/login">Login</Link>,
+            key: 'login-page',
+            icon: <UsergroupAddOutlined />,
+        }] : []),
         ...(auth.isAuthenticated ? [{
-            label: <Link to={auth?.user?.role === 'ADMIN' ? "/admin/profile" : "/user/profile"}>Profile</Link>,
+            label: <Link to={auth?.user?.role === 'ADMIN' ? "/admin" : "/user/profile"}>Profile</Link>,
             key: 'profile',
             icon: <UsergroupAddOutlined />,
         }] : []),
@@ -39,11 +58,7 @@ const Header = () => {
             icon: <SettingOutlined />,
             children: [
                 ...(auth.isAuthenticated ? [{
-                    label: <span onClick={() => {
-                        logout();
-                        setCurrent("home");
-                        navigate("/");
-                    }}>Đăng xuất</span>,
+                    label: <span onClick={handleLogout}>Đăng xuất</span>,
                     key: 'logout',
                 }] : [
                     {

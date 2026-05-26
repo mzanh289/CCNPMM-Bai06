@@ -11,6 +11,7 @@ import {
 import RegisterPage from './pages/register.jsx';
 import UserPage from './pages/user.jsx';
 import AdminPage from './pages/admin.jsx';
+import AdminHomePage from './pages/admin-home.jsx';
 import HomePage from './pages/home.jsx';
 import LoginPage from './pages/login.jsx';
 import ProductDetailPage from './pages/product-detail.jsx';
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
       },
       {
         path: "admin",
-        element: <Navigate to="/admin/profile" replace />
+        element: <ProtectedRoute allowedRoles={["ADMIN"]}><AdminHomePage /></ProtectedRoute>
       },
       {
         path: "admin/profile",
