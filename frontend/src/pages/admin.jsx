@@ -10,6 +10,7 @@ const STATUS_OPTIONS = [
   'preparing',
   'shipping',
   'delivered',
+  'received',
   'cancelled',
   'cancel_requested'
 ];
@@ -21,6 +22,7 @@ const NEXT_STATUS = {
   shipping: ['delivered'],
   cancel_requested: ['cancelled'],
   delivered: [],
+  received: [],
   cancelled: []
 };
 

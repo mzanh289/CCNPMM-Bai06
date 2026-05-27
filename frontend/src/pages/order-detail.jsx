@@ -49,7 +49,7 @@ const OrderDetailPage = () => {
     try {
       const res = await confirmDeliveredApi(id);
       if (res?.success) {
-        notification.success({ message: 'Order', description: res?.message || 'Order delivered.' });
+        notification.success({ message: 'Order', description: res?.message || 'Order received.' });
         setOrder(res?.data?.order ?? order);
       } else {
         notification.error({ message: 'Order', description: res?.message || 'Unable to confirm delivery.' });
@@ -143,7 +143,9 @@ const OrderDetailPage = () => {
 
                 <div className="rounded-3xl border border-slate-200 bg-white p-6">
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Actions</p>
-                  {['shipping', 'delivered', 'cancelled', 'cancel_requested'].includes(order.orderStatus) && (
+                  {['shipping', 'delivered', 'received', 'cancelled', 'cancel_requested'].includes(
+                    order.orderStatus
+                  ) && (
                     <p className="mt-3 text-xs text-slate-400">
                       This order can no longer be cancelled.
                     </p>
@@ -152,7 +154,9 @@ const OrderDetailPage = () => {
                     type="button"
                     className="mt-4 w-full rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 disabled:opacity-50"
                     onClick={handleCancel}
-                    disabled={['shipping', 'delivered', 'cancelled', 'cancel_requested'].includes(order.orderStatus)}
+                    disabled={['shipping', 'delivered', 'received', 'cancelled', 'cancel_requested'].includes(
+                      order.orderStatus
+                    )}
                   >
                     Request cancellation
                   </button>

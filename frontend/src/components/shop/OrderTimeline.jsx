@@ -1,4 +1,4 @@
-const STATUS_ORDER = ['pending', 'confirmed', 'preparing', 'shipping', 'delivered'];
+const STATUS_ORDER = ['pending', 'confirmed', 'preparing', 'shipping', 'delivered', 'received'];
 
 const STATUS_LABELS = {
   pending: 'Pending',
@@ -6,6 +6,7 @@ const STATUS_LABELS = {
   preparing: 'Preparing',
   shipping: 'Shipping',
   delivered: 'Delivered',
+  received: 'Received',
   cancelled: 'Cancelled',
   cancel_requested: 'Cancel requested'
 };
@@ -32,7 +33,7 @@ const OrderTimeline = ({ status }) => {
         {STATUS_ORDER.map((step, index) => {
           const isActive = index === activeIndex;
           const isComplete =
-            index < activeIndex || (status === 'delivered' && index === activeIndex);
+            index < activeIndex || (['delivered', 'received'].includes(status) && index === activeIndex);
           return (
             <div key={step} className="flex items-center gap-3">
               <span

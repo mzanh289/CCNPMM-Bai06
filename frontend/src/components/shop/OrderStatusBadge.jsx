@@ -4,6 +4,7 @@ const STATUS_STYLES = {
   preparing: 'bg-indigo-100 text-indigo-700',
   shipping: 'bg-sky-100 text-sky-700',
   delivered: 'bg-emerald-100 text-emerald-700',
+  received: 'bg-emerald-200 text-emerald-800',
   cancelled: 'bg-rose-100 text-rose-700',
   cancel_requested: 'bg-orange-100 text-orange-700'
 };
@@ -14,6 +15,7 @@ const STATUS_LABELS = {
   preparing: 'Preparing',
   shipping: 'Shipping',
   delivered: 'Delivered',
+  received: 'Received',
   cancelled: 'Cancelled',
   cancel_requested: 'Cancel requested'
 };

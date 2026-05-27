@@ -84,7 +84,7 @@ const cancelOrder = async (req, res) => {
 const confirmDelivered = async (req, res) => {
   try {
     const order = await orderService.confirmDelivered(req.user.id, req.params.id);
-    return respondSuccess(res, 'Order marked as delivered.', { order });
+    return respondSuccess(res, 'Order marked as received.', { order });
   } catch (error) {
     if (error.message === 'ORDER_NOT_FOUND') {
       return respondError(res, 404, 'Order not found.');

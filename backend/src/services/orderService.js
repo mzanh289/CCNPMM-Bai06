@@ -155,17 +155,15 @@ const cancelOrder = async (userId, orderId) => {
     throw new Error('ORDER_NOT_FOUND');
   }
 
-  if (['cancelled', 'delivered'].includes(order.orderStatus)) {
+  if (['cancelled', 'delivered', 'received'].includes(order.orderStatus)) {
     throw new Error('ORDER_FINAL');
   }
 
   const elapsedMs = Date.now() - new Date(order.orderedAt).getTime();
   const withinWindow = elapsedMs <= ORDER_CONFIRM_MINUTES * 60 * 1000;
 
-  if (order.orderStatus === 'preparing') {
+  if (['pending', 'confirmed', 'preparing'].includes(order.orderStatus) && withinWindow) {
     order.orderStatus = 'cancel_requested';
-  } else if (['pending', 'confirmed'].includes(order.orderStatus) && withinWindow) {
-    order.orderStatus = 'cancelled';
   } else if (['shipping'].includes(order.orderStatus)) {
     throw new Error('ORDER_CANNOT_CANCEL');
   } else {
@@ -214,7 +212,7 @@ const confirmDelivered = async (userId, orderId) => {
     throw new Error('ORDER_NOT_DELIVERED');
   }
 
-  order.orderStatus = 'delivered';
+  order.orderStatus = 'received';
   await order.save();
   return order;
 };
@@ -230,7 +228,7 @@ const updateOrderStatus = async (orderId, status) => {
     throw new Error('ORDER_NOT_FOUND');
   }
 
-  if (['cancelled', 'delivered'].includes(order.orderStatus)) {
+  if (['cancelled', 'delivered', 'received'].includes(order.orderStatus)) {
     throw new Error('ORDER_FINAL');
   }
 
@@ -253,7 +251,8 @@ const updateOrderStatus = async (orderId, status) => {
     confirmed: 2,
     preparing: 3,
     shipping: 4,
-    delivered: 5
+    delivered: 5,
+    received: 6
   };
 
   const currentRank = statusRank[order.orderStatus] ?? 0;
