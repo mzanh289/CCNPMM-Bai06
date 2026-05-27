@@ -15,8 +15,33 @@ const getProfileApi = (role = "USER") => {
     return axios.get(`${API_PREFIX}${endpoint}`);
 }
 
+const forgotPasswordApi = (data) => {
+    return axios.post(`${API_PREFIX}/forgot-password`, data);
+}
+
+const resetPasswordApi = (data) => {
+    return axios.post(`${API_PREFIX}/reset-password`, data);
+}
+
+const updateProfileApi = (data) => {
+    return axios.put(`${API_PREFIX}/profile`, data);
+}
+
+const verifyOtpApi = (data) => {
+    return axios.post(`${API_PREFIX}/verify-otp`, data);
+}
+
+const resendOtpApi = (data) => {
+    return axios.post(`${API_PREFIX}/resend-otp`, data);
+}
+
 export {
     createUserApi,
     loginApi,
-    getProfileApi
+    getProfileApi,
+    forgotPasswordApi,
+    resetPasswordApi,
+    updateProfileApi,
+    verifyOtpApi,
+    resendOtpApi
 }

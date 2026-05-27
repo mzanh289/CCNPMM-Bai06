@@ -151,6 +151,11 @@ const HomePage = () => {
     [filters]
   );
 
+  const handleSearchChange = (value) => {
+    setSearch(value);
+    debouncedSearch(value);
+  };
+
   useEffect(() => {
     loadLanding();
     loadCatalog({ nextFilters: filters, page: 1, append: false, keyword: search });
@@ -201,10 +206,7 @@ const HomePage = () => {
     <div className="flex min-h-screen flex-col">
       <ShopHeader
         searchValue={search}
-        onSearchChange={(value) => {
-          setSearch(value);
-          debouncedSearch(value);
-        }}
+        onSearchChange={handleSearchChange}
       />
 
       <main className="flex flex-col gap-16 py-10">
@@ -361,6 +363,8 @@ const HomePage = () => {
               <FilterPanel
                 categories={categories}
                 filters={filters}
+                searchValue={search}
+                onSearchChange={handleSearchChange}
                 onChange={handleFilterChange}
                 onReset={handleReset}
               />

@@ -1,13 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { Modal, notification } from 'antd';
+import { useContext, useMemo, useState } from 'react';
+import { Button, Dropdown, Form, Input, Modal, notification } from 'antd';
 import { AuthContext } from '../context/auth.context';
 import { SearchOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { CartContext } from '../context/cart.context.jsx';
 import CartDrawer from './CartDrawer';
+import { updateProfileApi } from '../../util/api';
 
 const ShopHeader = ({ searchValue = '', onSearchChange }) => {
-  const { auth, logout } = useContext(AuthContext);
+  const { auth, logout, setAuth } = useContext(AuthContext);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileForm] = Form.useForm();
   const {
     cart,
     itemCount,
@@ -43,6 +47,65 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
     openDrawer();
   };
 
+  const handleProfileOpen = () => {
+    profileForm.setFieldsValue({
+      name: auth?.user?.name ?? '',
+      currentPassword: '',
+      newPassword: ''
+    });
+    setProfileOpen(true);
+  };
+
+  const handleProfileUpdate = async (values) => {
+    const payload = {};
+    const trimmedName = values.name?.trim();
+
+    if (trimmedName) {
+      payload.name = trimmedName;
+    }
+
+    if (values.newPassword) {
+      payload.currentPassword = values.currentPassword;
+      payload.newPassword = values.newPassword;
+    }
+
+    setProfileLoading(true);
+    try {
+      const res = await updateProfileApi(payload);
+      if (res?.user) {
+        notification.success({
+          message: 'Profile',
+          description: res?.message ?? 'Cập nhật profile thành công.'
+        });
+        setAuth((prev) => ({
+          ...prev,
+          user: {
+            ...prev.user,
+            ...res.user
+          }
+        }));
+        setProfileOpen(false);
+      } else {
+        notification.error({
+          message: 'Profile',
+          description: res?.message ?? 'Không thể cập nhật profile.'
+        });
+      }
+    } catch {
+      notification.error({
+        message: 'Profile',
+        description: 'Không thể kết nối đến máy chủ'
+      });
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const profileMeta = useMemo(() => ({
+    email: auth?.user?.email ?? 'N/A',
+    role: auth?.user?.role ?? 'USER'
+  }), [auth?.user?.email, auth?.user?.role]);
+
   return (
     <>
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
@@ -53,7 +116,7 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white font-bold">Q</div>
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Quick & Legit</p>
-                <h1 className="font-display text-xl text-slate-900">DANH'S SHOP</h1>
+                <h1 className="font-display text-xl text-slate-900">DANH'S GROCERY STORE</h1>
               </div>
             </Link>
             <button className="flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white lg:hidden">
@@ -91,38 +154,121 @@ const ShopHeader = ({ searchValue = '', onSearchChange }) => {
                   </span>
                 )}
               </button>
-              <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2">
-                <div className="h-8 w-8 rounded-full bg-slate-900/90 text-xs font-semibold text-white flex items-center justify-center">
-                  {auth?.user?.name?.[0]?.toUpperCase() || auth?.user?.email?.[0]?.toUpperCase() || 'U'}
-                </div>
-                <div className="text-left">
-                  <p className="text-xs text-slate-500">Member</p>
-                  <p className="text-sm font-semibold text-slate-900">
-                    {auth?.user?.name || auth?.user?.email || 'Guest'}
-                  </p>
-                </div>
-                {auth?.isAuthenticated ? (
-                  <button
-                    className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-400"
-                    onClick={handleLogout}
-                  >
-                    <LogoutOutlined />
-                    Logout
+              {auth?.isAuthenticated ? (
+                <Dropdown
+                  trigger={['click']}
+                  dropdownRender={() => (
+                    <div className="w-72 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-slate-900/90 text-sm font-semibold text-white flex items-center justify-center">
+                          {auth?.user?.name?.[0]?.toUpperCase() || auth?.user?.email?.[0]?.toUpperCase() || 'U'}
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Member</p>
+                          <p className="text-sm font-semibold text-slate-900">
+                            {auth?.user?.name || auth?.user?.email || 'Guest'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-1 text-sm text-slate-600">
+                        <p><span className="text-xs uppercase tracking-[0.2em] text-slate-400">Email</span><br />{profileMeta.email}</p>
+                        <p><span className="text-xs uppercase tracking-[0.2em] text-slate-400">Role</span><br />{profileMeta.role}</p>
+                      </div>
+                      <div className="mt-4 flex flex-col gap-2">
+                        <Button type="primary" onClick={handleProfileOpen}>
+                          Profile
+                        </Button>
+                        <button
+                          className="flex items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:border-slate-400"
+                          onClick={handleLogout}
+                        >
+                          <LogoutOutlined />
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                >
+                  <button className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2">
+                    <div className="h-8 w-8 rounded-full bg-slate-900/90 text-xs font-semibold text-white flex items-center justify-center">
+                      {auth?.user?.name?.[0]?.toUpperCase() || auth?.user?.email?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="text-left">
+                      <p className="text-xs text-slate-500">Member</p>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {auth?.user?.name || auth?.user?.email || 'Guest'}
+                      </p>
+                    </div>
                   </button>
-                ) : (
-                  <button
-                    className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-400"
-                    onClick={() => navigate('/login')}
-                  >
-                    Login
-                  </button>
-                )}
-              </div>
+                </Dropdown>
+              ) : (
+                <button
+                  className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:border-slate-400"
+                  onClick={() => navigate('/login')}
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
     </header>
+    <Modal
+      open={profileOpen}
+      onCancel={() => setProfileOpen(false)}
+      footer={null}
+      title="Thông tin tài khoản"
+      destroyOnClose
+    >
+      <Form
+        form={profileForm}
+        layout="vertical"
+        onFinish={handleProfileUpdate}
+        requiredMark={false}
+      >
+        <Form.Item
+          label="Tên hiển thị"
+          name="name"
+        >
+          <Input size="large" placeholder="Nhập tên hiển thị" />
+        </Form.Item>
+
+        <Form.Item
+          label="Mật khẩu hiện tại"
+          name="currentPassword"
+          dependencies={['newPassword']}
+          rules={[
+            ({ getFieldValue }) => ({
+              validator: (_, value) => {
+                if (getFieldValue('newPassword') && !value) {
+                  return Promise.reject(new Error('Vui lòng nhập mật khẩu hiện tại'));
+                }
+                return Promise.resolve();
+              }
+            })
+          ]}
+        >
+          <Input.Password size="large" placeholder="Nhập mật khẩu hiện tại" />
+        </Form.Item>
+
+        <Form.Item
+          label="Mật khẩu mới"
+          name="newPassword"
+          rules={[
+            { min: 6, message: 'Mật khẩu phải từ 6 ký tự trở lên' }
+          ]}
+        >
+          <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" loading={profileLoading} block>
+            Cập nhật profile
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
     {auth?.isAuthenticated && (
       <CartDrawer
         open={isDrawerOpen}

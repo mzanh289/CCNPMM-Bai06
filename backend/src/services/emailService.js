@@ -25,7 +25,7 @@ const logOtpFallback = (email, otp) => {
     console.log('OTP EMAIL:', email);
 };
 
-const sendOtpMail = async (email, otp) => {
+const sendOtpMailInternal = async (email, otp, subject) => {
     if (!email || !otp) {
         throw new Error('EMAIL_SERVICE_INVALID_INPUT');
     }
@@ -44,7 +44,7 @@ const sendOtpMail = async (email, otp) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: 'Mã OTP Xác Nhận Đăng Ký Tài Khoản',
+        subject,
         html: `<h3>Mã OTP của bạn là: <b>${otp}</b></h3><p>Mã này có hiệu lực trong 5 phút.</p>`
     };
 
@@ -69,4 +69,12 @@ const sendOtpMail = async (email, otp) => {
     }
 };
 
-module.exports = { sendOtpMail };
+const sendOtpMail = async (email, otp) => {
+    return sendOtpMailInternal(email, otp, 'Mã OTP Xác Nhận Đăng Ký Tài Khoản');
+};
+
+const sendResetPasswordOtpMail = async (email, otp) => {
+    return sendOtpMailInternal(email, otp, 'Mã OTP Đặt Lại Mật Khẩu');
+};
+
+module.exports = { sendOtpMail, sendResetPasswordOtpMail };

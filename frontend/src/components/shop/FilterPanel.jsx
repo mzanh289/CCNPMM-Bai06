@@ -1,6 +1,8 @@
 const FilterPanel = ({
   categories = [],
   filters,
+  searchValue = '',
+  onSearchChange,
   onChange,
   onReset
 }) => {
@@ -9,6 +11,17 @@ const FilterPanel = ({
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Filters</p>
         <h4 className="mt-2 text-lg font-semibold text-slate-900">Refine search</h4>
+      </div>
+
+      <div className="space-y-4">
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Search</label>
+        <input
+          type="text"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm"
+          placeholder="Search products"
+          value={searchValue}
+          onChange={(event) => onSearchChange?.(event.target.value)}
+        />
       </div>
 
       <div className="space-y-4">

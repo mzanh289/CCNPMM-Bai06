@@ -19,7 +19,7 @@ const buildSearchFilter = ({ search }) => {
 
   const regex = new RegExp(search, 'i');
   return {
-    $or: [{ name: regex }, { description: regex }]
+    name: regex
   };
 };
 
